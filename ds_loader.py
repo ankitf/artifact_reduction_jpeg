@@ -42,7 +42,6 @@ class DSLoader:
         Y = np.zeros([self.batch_size, self.block_size, self.block_size, self.block_channels], np.float32)
         if self.current_index > len(self.compressed_data) - self.batch_size:
             self.current_index = 0
-            return None, None
 
         for i in range(self.batch_size):
             X[i, :, :, :] = self.compressed_data[self.current_index+i] / 255.0
