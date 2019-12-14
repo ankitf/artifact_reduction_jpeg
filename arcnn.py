@@ -99,7 +99,7 @@ class ARCNN:
             validation_psnr = calculate_psnr(validation_mse)
     
             self._write_logs_to_tensorboard(i, train_psnr, validation_psnr)
-            print('Train MSE: {}, Train PSNR: {}, Validation MSE: {}, Validation PSNR: {}'.
+            print('Train MSE: {:.4f}, Train PSNR: {:.4f}, Validation MSE: {:.4f}, Validation PSNR: {:.4f}'.
                   format(train_mse, train_psnr, validation_mse, validation_psnr))
                         
         return
