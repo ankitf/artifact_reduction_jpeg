@@ -9,14 +9,14 @@ import cv2
 
 class DSLoader:
     ''' Dataset loader for JPEG artifact reduction. '''
-    def __init__(self, dataset_path, quality, block_size, block_channel, batch_size, stride):
+    def __init__(self, dataset_path, quality, block_size, block_channels, batch_size, stride):
         self.dataset_path = dataset_path
         self.images_paths = self._load_paths(self.dataset_path)
         self.jpeg_quality = quality
         self.original_data = []
         self.compressed_data = []
         self.block_size = block_size
-        self.block_channels = block_channel 
+        self.block_channels = block_channels
         self.batch_size = 128
         self.current_index = 0
         self.stride = stride
@@ -38,8 +38,8 @@ class DSLoader:
         return original_image, compressed_image
 
     def get_batch(self):
-        X = np.zeros([self.batch_size, self.block_size, self.block_size, self.channels], np.float32)
-        Y = np.zeros([self.batch_size, self.block_size, self.block_size, self.channels], np.float32)
+        X = np.zeros([self.batch_size, self.block_size, self.block_size, self.block_channels], np.float32)
+        Y = np.zeros([self.batch_size, self.block_size, self.block_size, self.block_channels], np.float32)
         if self.current_index > len(self.compressed_data) - self.batch_size:
             self.current_index = 0
             return None, None
@@ -72,16 +72,16 @@ class DSLoader:
         
         
     
-train_dataset_path = './dataset/train/'
-block_size = 32
-quality = 0.6
-block_channel = 3
-batch_size = 128
-train_image_stride = 10
+# train_dataset_path = './dataset/train/'
+# block_size = 32
+# quality = 0.6
+# block_channel = 3
+# batch_size = 128
+# train_image_stride = 10
 
-validation_dataset_path = './dataset/validation'
+# validation_dataset_path = './dataset/validation'
 
-train_data = DSLoader(train_dataset_path, quality, block_size, block_channel, batch_size, train_image_stride)
-# validation_data = DSLoader(validation_dataset_path)
-import pdb
-train_data.load_dataset()
+# train_data = DSLoader(train_dataset_path, quality, block_size, block_channel, batch_size, train_image_stride)
+# # validation_data = DSLoader(validation_dataset_path)
+# import pdb
+# train_data.load_dataset()
