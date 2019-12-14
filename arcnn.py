@@ -7,6 +7,7 @@ from keras.optimizers import SGD
 import numpy as np
 import math
 import os
+import shutil
 
 
 
@@ -30,6 +31,9 @@ class ARCNN:
         self.validation_dataset = DSLoader(self.validation_dataset_path, self.jpeg_quality, self.block_size,
                                            self.channels, self.validation_batch_size, self.validation_stride)
         self.model = []
+        # removing old logs 
+        if os.path.exists(self.log_path):
+            shutil.rmtree(self.log_path)
         self.summary_writer = tf.summary.FileWriter(self.log_path)
 
     def build_model(self, learning_rate):
@@ -82,7 +86,6 @@ class ARCNN:
         def calculate_psnr(mse):
             return 10.0 * math.log10(1.0/mse)
 
-        
         print('[INFO]training the model...')
         
         for i in range(number_of_train_iterations):
@@ -94,15 +97,11 @@ class ARCNN:
             y_pred = self.model.predict_on_batch(validationX)
             validation_mse = mean_squared_error(validationY, y_pred)
             validation_psnr = calculate_psnr(validation_mse)
-            import pdb
-#            pdb.set_trace()
-
+    
             self._write_logs_to_tensorboard(i, train_psnr, validation_psnr)
             print('Train MSE: {}, Train PSNR: {}, Validation MSE: {}, Validation PSNR: {}'.
                   format(train_mse, train_psnr, validation_mse, validation_psnr))
-            
-
-            
+                        
         return
      
         
