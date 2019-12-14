@@ -13,7 +13,7 @@ def main():
     validation_stride = 32
     jpeg_quality = 0.6
     
-    number_of_train_iterations = 50
+    number_of_train_iterations = 1000
     learning_rate = 0.0006
 
     arcnn = ARCNN(dataset_path, log_path, jpeg_quality, block_size, block_channels, train_batch_size,
