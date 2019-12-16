@@ -10,7 +10,7 @@ import pdb
 
 
 def main():
-    output_dir = '/home/ankit/disk/orbo/results'
+    output_dir = './results'
     inference_dir = './dataset/validation/'
 
     if not os.path.exists(output_dir):
