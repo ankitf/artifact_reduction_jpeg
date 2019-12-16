@@ -12,7 +12,10 @@ import pdb
 def main():
     output_dir = '/home/ankit/disk/orbo/results'
     inference_dir = './dataset/validation/'
-    
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+        
     images_paths = []
     for path, folders, files in os.walk(inference_dir):
         for filename in files:
