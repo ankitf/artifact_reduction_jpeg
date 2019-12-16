@@ -2,8 +2,8 @@
 from ds_loader import DSLoader
 import tensorflow as tf
 from keras.models import Sequential
-from keras.layers import Input, Conv2D, Activation
-from keras.optimizers import SGD
+from keras.layers import Input, Conv2D, Activation, LeakyReLU
+from keras.optimizers import SGD, Adam
 import numpy as np
 import math
 import os
@@ -41,14 +41,17 @@ class ARCNN:
         self.model = Sequential()
         self.model.add(Conv2D(64, (9, 9), input_shape=(self.block_size, self.block_size, self.channels),
                               padding='same', kernel_initializer='random_normal'))
-        self.model.add(Activation('relu'))
+        #self.model.add(Activation('relu'))
+        self.model.add(LeakyReLU(alpha=0.1))
         self.model.add(Conv2D(32, (7, 7),padding='same', kernel_initializer='random_normal'))
-        self.model.add(Activation('relu'))
+        # self.model.add(Activation('relu'))
+        self.model.add(LeakyReLU(alpha=0.1))
         self.model.add(Conv2D(16, (1, 1), padding='same', kernel_initializer='random_normal'))
-        self.model.add(Activation('relu'))
+        # self.model.add(Activation('relu'))
+        self.model.add(LeakyReLU(alpha=0.1))
         self.model.add(Conv2D(self.channels, (5, 5), padding='same', kernel_initializer='random_normal'))
-        optimizer = SGD(lr=self.learning_rate)
-
+        # optimizer = SGD(lr=self.learning_rate)
+        optimizer = Adam(lr=self.learning_rate)
         self.model.compile(loss='mean_squared_error', optimizer=optimizer)
         return
 
@@ -73,11 +76,10 @@ class ARCNN:
         print('[INFO]loading the validation dataset...')
         self.validation_dataset.load_dataset()
 
-        train_losses = []
-        validations_losses = []
-
         train_psnr = []
         validation = []
+
+        best_validation_psnr = 0
 
         def mean_squared_error(y_true, y_pred):
             mse = np.mean((y_true - y_pred)**2)
@@ -99,9 +101,17 @@ class ARCNN:
             validation_psnr = calculate_psnr(validation_mse)
     
             self._write_logs_to_tensorboard(i, train_psnr, validation_psnr)
+
+            if validation_psnr > best_validation_psnr:
+                best_validation_psnr = validation_psnr
+                print('Updating Best Validation Accuracy: {}'.format(best_validation_psnr))
+                print('Saving the model...')
+                self.model.save('model.h5')
             print('Train MSE: {:.4f}, Train PSNR: {:.4f}, Validation MSE: {:.4f}, Validation PSNR: {:.4f}'.
                   format(train_mse, train_psnr, validation_mse, validation_psnr))
-                        
+
+        print('Training Ended')
+        print('Best Validation PSNR: {}'.format(best_validation_psnr))
         return
      
         
