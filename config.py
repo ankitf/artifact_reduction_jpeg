@@ -11,5 +11,5 @@ train_stride = 10
 validation_stride = 32
 jpeg_quality = 0.6
 
-number_of_train_iterations = 1000
+number_of_train_iterations = 5000
 learning_rate = 0.0008
